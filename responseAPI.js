@@ -59,7 +59,7 @@ if (fs.statSync('./memory.json').size > fs.statSync('./memoryInitial.json').size
   jsonData.shift();
   console.log("========")
   console.log(jsonData)
-  //await createCompletion(reponseChatData, jsonData);
+  await createCompletion(reponseChatData, jsonData);
   /*await createCompletion(reponseChatData, [{
         role: "user",
         content: "What is 2 + 2?",
