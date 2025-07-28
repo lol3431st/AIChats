@@ -8,7 +8,7 @@ let debugMode = true;
 
 const reponseModel = await loadModel('orca-mini-3b-gguf2-q4_0.gguf', { // change this to uncensored model STAT!!!
   verbose: debugMode,
-  device: "gpu",
+  device: "cpu",
   nCtx: 2048,
 })
 
@@ -39,11 +39,7 @@ async function addToDatabase(role, newMessage, memoryfile) {
 };
 
 async function readfromDatabase(memoryfile) {
-  //If the length of memory.json is zero, copy over the contents of memoryInitial.json.
-  if (fs.statSync(memoryfile).size === 0) {
-    console.log("Memory file is empty, copying initial memory.");
-    fs.copyFileSync('./memoryInitial.json', memoryfile);
-  }
+  
 
   try {
   jsonData = await JSON.parse( fs.readFileSync(memoryfile, 'utf8') )}
@@ -57,8 +53,15 @@ async function readfromDatabase(memoryfile) {
 }
 
 // Load External Memory
-if (readfromDatabase('./memory.json').length > 0) {
+if (fs.statSync('./memory.json').size > fs.statSync('./memoryInitial.json').size) { // if the memory is bigger than the inital file
   await createCompletion(reponseChatData, readfromDatabase('./memory.json'));
+  console.log("Memory loaded from memory.json");
+} else {
+  //If the length of memory.json is zero, copy over the contents of memoryInitial.json.
+  if (fs.statSync('./memory.json').size === 0) {
+    console.log("Memory file is empty, copying initial memory.");
+    fs.copyFileSync('./memoryInitial.json', './memory.json');
+  }
 }
 
 const dispose = () => {
