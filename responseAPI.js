@@ -1,6 +1,6 @@
 // run `node index.js` in the terminal
 import {createCompletion, createCompletionStream, loadModel} from './node_modules/gpt4all/src/gpt4all.js'
-import "vader-sentiment"
+const vader = require('vader-sentiment');
 import { prompt } from 'readline-sync';
 import * as fs from 'fs';
 
@@ -105,4 +105,6 @@ const respond = async (newMessage) => {
 
 //dispose();
 let newMessage = prompt();
-respond(newMessage);
+let aiMessage = respond(newMessage);
+let sentiment = vader.SentimentIntensityAnalyzer.polarity_scores(aiMessage)
+console.log(sentiment)

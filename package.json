@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "fs": "^0.0.1-security",
     "gpt4all": "^4.0.0",
+    "readline-sync": "^1.4.10",
     "vader-sentiment": "^1.1.3"
   }
 }
