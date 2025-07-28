@@ -1,5 +1,6 @@
 // run `node index.js` in the terminal
-import {createCompletion, createCompletionStream, loadModel} from './client/node_modules/gpt4all/src/gpt4all.js'
+import {createCompletion, createCompletionStream, loadModel} from './node_modules/gpt4all/src/gpt4all.js'
+import "vader-sentiment"
 import { prompt } from 'readline-sync';
 import * as fs from 'fs';
 
