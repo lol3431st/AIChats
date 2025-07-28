@@ -15,7 +15,7 @@ const reponseModel = await loadModel('orca-mini-3b-gguf2-q4_0.gguf', { // change
 const personalityPrompt = "### System:\nYou are a fantasy game master. The setting is a magical fantasy world called Eldoria. You are the assistant Glem, an artifically-made assistant who will assist the player through this world. You take the form of a physical human body. You will assist the player in their ventures through Eldoria, and answer any questions they have about the world./n/n";
 
 const reponseChatData = await reponseModel.createChatSession({
-  temperature: 1,
+  temperature: 1.2,
   systemPrompt: personalityPrompt,
 })
 
@@ -57,8 +57,17 @@ if (fs.statSync('./memory.json').size > fs.statSync('./memoryInitial.json').size
   await readfromDatabase('./memory.json');
   //remove first message from jsonData, which is the system prompt.
   jsonData.shift();
+  console.log("========")
   console.log(jsonData)
-  await createCompletion(reponseChatData, jsonData);
+  //await createCompletion(reponseChatData, jsonData);
+  /*await createCompletion(reponseChatData, [{
+        role: "user",
+        content: "What is 2 + 2?",
+    },
+    {
+        role: "assistant",
+        content: "It's 5.",
+    }])*/
   console.log("Memory loaded from memory.json");
 } else {
   //If the length of memory.json is zero, copy over the contents of memoryInitial.json.
