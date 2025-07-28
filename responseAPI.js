@@ -1,6 +1,6 @@
 // run `node index.js` in the terminal
 import {createCompletion, createCompletionStream, loadModel} from './node_modules/gpt4all/src/gpt4all.js'
-const vader = require('vader-sentiment');
+import * as vader from 'vader-sentiment';
 import { prompt } from 'readline-sync';
 import * as fs from 'fs';
 
@@ -39,14 +39,20 @@ async function addToDatabase(role, newMessage, memoryfile) {
 };
 
 async function readfromDatabase(memoryfile) {
-  jsonData = await JSON.parse(
-    await fs.readFileSync(memoryfile, 'utf8', 
-      function (err) { 
+  //If the length of memory.json is zero, copy over the contents of memoryInitial.json.
+  if (fs.statSync(memoryfile).size === 0) {
+    console.log("Memory file is empty, copying initial memory.");
+    fs.copyFileSync('./memoryInitial.json', memoryfile);
+  }
+
+  try {
+  jsonData = await JSON.parse( fs.readFileSync(memoryfile, 'utf8') )}
+  catch (err) { 
         console.log("Error reading from memory file: " + err); 
         return Error("Read Halted");
-      }
-    )
-  );
+    }
+    
+  
   return jsonData;
 }
 
@@ -94,10 +100,10 @@ const respond = async (newMessage) => {
   if (debugMode) {
     console.log(reponseDataOutput.result);
     console.log(APIResponse)
+    console.log("Role: " + APIResponse.choices[0].message.role);
+    console.log("Content: " + APIResponse.choices[0].message.content);
   }
 
-   console.log("Role: " + APIResponse.choices[0].message.role);
-   console.log("Content: " + APIResponse.choices[0].message.content);
 
   return APIResponse.choices[0].message.content;
     
@@ -105,6 +111,16 @@ const respond = async (newMessage) => {
 
 //dispose();
 let newMessage = prompt();
-let aiMessage = respond(newMessage);
+let aiMessage = await respond(newMessage);
+
+let feeling = "neutral";
 let sentiment = vader.SentimentIntensityAnalyzer.polarity_scores(aiMessage)
 console.log(sentiment)
+if (sentiment.compound >= 0.05) {
+  feeling = "positive";
+} else if (sentiment.compound <= -0.05) {
+  feeling = "negative";
+} else {
+  feeling = "neutral";
+}
+console.log(feeling);
