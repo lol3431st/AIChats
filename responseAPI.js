@@ -54,7 +54,9 @@ async function readfromDatabase(memoryfile) {
 
 // Load External Memory
 if (fs.statSync('./memory.json').size > fs.statSync('./memoryInitial.json').size) { // if the memory is bigger than the inital file
-  await createCompletion(reponseChatData, readfromDatabase('./memory.json'));
+  await readfromDatabase('./memory.json');
+  console.log(jsonData)
+  await createCompletion(reponseChatData, jsonData);
   console.log("Memory loaded from memory.json");
 } else {
   //If the length of memory.json is zero, copy over the contents of memoryInitial.json.
